@@ -1,0 +1,127 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --color-bg: #05060f;
+  --color-bg-alt: #0e1020;
+  --color-surface: rgba(255, 255, 255, 0.04);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-text: #f7f8ff;
+  --color-text-muted: #a8b3d0;
+  --color-primary: #6e7bff;
+  --color-primary-soft: rgba(110, 123, 255, 0.12);
+  --color-accent: #31c6ff;
+  --glow: 0 20px 60px rgba(24, 58, 245, 0.25);
+  --radius-xl: 32px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --transition-soft: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Space Grotesk', 'Segoe UI', sans-serif;
+  background: radial-gradient(circle at 10% 20%, rgba(110, 123, 255, 0.25), transparent 35%),
+    radial-gradient(circle at 90% 10%, rgba(49, 198, 255, 0.18), transparent 45%),
+    var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('data:image/svg+xml,%3Csvg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"%3E%3Crect width="0.5" height="120" fill="%23ffffff0f"/%3E%3Crect width="120" height="0.5" fill="%23ffffff0f"/%3E%3C/svg%3E');
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: -1;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, rgba(7, 9, 22, 0.95) 0%, rgba(4, 5, 12, 0.98) 60%, #04060f 100%);
+}
+
+.app-main {
+  flex: 1;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-soft);
+}
+
+a:hover {
+  color: #7fe0ff;
+}
+
+code {
+  background: var(--color-surface);
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: var(--color-accent);
+  font-family: 'Space Grotesk', 'Fira Code', Consolas, monospace;
+}
+
+::selection {
+  background: rgba(110, 123, 255, 0.4);
+  color: var(--color-text);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6e7bff, #31c6ff);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.page-loader {
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--color-text-muted);
+}
+
+.spinner-large {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.12);
+  border-top-color: var(--color-accent);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

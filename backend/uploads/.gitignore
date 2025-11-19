@@ -1,0 +1,10 @@
+# Audio uploads - do not commit
+*.webm
+*.wav
+*.mp3
+*.ogg
+*.m4a
+*.mp4
+
+# But keep the directory
+!.gitkeep

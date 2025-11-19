@@ -1,0 +1,16 @@
+# Node
+node_modules/
+
+# Env
+*.env
+
+# Dist/build
+dist/
+
+# Monorepo subfolders
+/backend/node_modules/
+/frontend/node_modules/
+
+# Editor
+.vscode/
+.DS_Store
