@@ -41,11 +41,17 @@ export default function Report() {
         setSession(summaryResponse.data.session);
       } else {
         // Extract summary from existing session data
+        const feedback = sessionResponse.data.session.feedback || {};
+        const feedbackSummary = feedback.summary;
+        const finalRecommendation = Array.isArray(feedbackSummary)
+          ? feedbackSummary.join(' ')
+          : (feedbackSummary || '');
+
         setSummary({
           overallScore: sessionResponse.data.session.overallScore,
-          overallStrengths: sessionResponse.data.session.feedback.strengths || [],
-          areasToImprove: sessionResponse.data.session.feedback.weaknesses || [],
-          finalRecommendation: sessionResponse.data.session.feedback.summary?.join(' ') || ''
+          overallStrengths: feedback.strengths || [],
+          areasToImprove: feedback.weaknesses || [],
+          finalRecommendation
         });
       }
 
@@ -115,7 +121,7 @@ export default function Report() {
   };
 
   const getCategoryScores = () => {
-    if (!session || !session.responses) return {};
+    if (!session || !session.responses || session.responses.length === 0) return {};
     
     const categories = {};
     session.responses.forEach(response => {
@@ -210,7 +216,9 @@ export default function Report() {
           </div>
           <div className="info-item">
             <span className="info-label">Questions Answered:</span>
-            <span className="info-value">{session.responses.length} / {session.questions.length}</span>
+            <span className="info-value">
+              {(session.responses?.length || 0)} / {(session.questions?.length || 0)}
+            </span>
           </div>
         </div>
 
@@ -309,7 +317,7 @@ export default function Report() {
         <div className="questions-review">
           <h2>Question-by-Question Analysis</h2>
           <div className="questions-list">
-            {session.responses.map((response, index) => {
+            {(session.responses || []).map((response, index) => {
               const question = response.questionId;
               if (!question) return null;
 

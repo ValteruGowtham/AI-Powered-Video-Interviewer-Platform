@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { ToastProvider } from './components/ToastContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import Home from './pages/Home'
 import Interview from './pages/Interview'
 import Header from './components/Header'
@@ -22,20 +23,24 @@ export default function App() {
   const location = useLocation()
 
   return (
-    <ToastProvider>
-      <div className="app-shell">
-        <Header />
-        <main className="app-main">
-          <Suspense fallback={<PageLoader />}>
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<Home />} />
-              <Route path="/interview" element={<Interview />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/report/:sessionId" element={<Report />} />
-            </Routes>
-          </Suspense>
-        </main>
-      </div>
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <div className="app-shell">
+          <Header />
+          <main className="app-main">
+            <ErrorBoundary>
+              <Suspense fallback={<PageLoader />}>
+                <Routes location={location} key={location.pathname}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/interview" element={<Interview />} />
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/report/:sessionId" element={<Report />} />
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
+          </main>
+        </div>
+      </ToastProvider>
+    </ErrorBoundary>
   )
 }

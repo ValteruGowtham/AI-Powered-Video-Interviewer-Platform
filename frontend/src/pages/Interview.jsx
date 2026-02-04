@@ -511,76 +511,55 @@ export default function Interview() {
 
   // Evaluate response using backend API
   const evaluateResponse = async () => {
-    try {
-      setIsEvaluating(true)
-      setError(null)
+    setIsEvaluating(false)
+    setError(null)
 
-      const currentQuestion = questions[currentQuestionIndex]
+    const currentQuestion = questions[currentQuestionIndex]
 
-      // Show immediate fake evaluation to prevent blank screen
-      setEvaluation({
-        score: 75,
-        strengths: ['Processing your answer...'],
-        weaknesses: [],
-        feedback: 'Analyzing your response...',
-        evaluationType: 'Processing'
-      })
-      
-      setIsEvaluating(false)
+    // Show immediate evaluation to prevent blank screen
+    setEvaluation({
+      score: 75,
+      strengths: ['Processing your answer...'],
+      weaknesses: [],
+      feedback: 'Analyzing your response...',
+      evaluationType: 'Processing'
+    })
 
-      // Get real AI evaluation in background
-      setTimeout(async () => {
-        try {
-          const evaluationResponse = await axios.post(`${API_BASE_URL}/evaluate`, {
-            questionId: currentQuestion._id,
-            transcription
-          }, { timeout: 10000 })
+    // Get real AI evaluation in background
+    setTimeout(async () => {
+      try {
+        const evaluationResponse = await axios.post(`${API_BASE_URL}/evaluate`, {
+          questionId: currentQuestion._id,
+          transcription
+        }, { timeout: 10000 })
 
-          setEvaluation(evaluationResponse.data.evaluation)
-          
-          // Save video in background
-          const videoBlob = new Blob(audioChunksRef.current, { type: 'video/webm' })
-          if (videoBlob.size < 50 * 1024 * 1024) {
-            const videoFile = new File([videoBlob], `answer-${Date.now()}.webm`, { type: 'video/webm' })
-            const formData = new FormData()
-            formData.append('video', videoFile)
-            formData.append('questionId', currentQuestion._id)
-            formData.append('transcription', transcription)
-            formData.append('score', evaluationResponse.data.evaluation.score)
+        setEvaluation(evaluationResponse.data.evaluation)
+        
+        // Save video in background
+        const videoBlob = new Blob(audioChunksRef.current, { type: 'video/webm' })
+        if (videoBlob.size < 50 * 1024 * 1024) {
+          const videoFile = new File([videoBlob], `answer-${Date.now()}.webm`, { type: 'video/webm' })
+          const formData = new FormData()
+          formData.append('video', videoFile)
+          formData.append('questionId', currentQuestion._id)
+          formData.append('transcription', transcription)
+          formData.append('score', evaluationResponse.data.evaluation.score)
 
-            await axios.post(`${API_BASE_URL}/sessions/${sessionId}/response`, formData, {
-              headers: { 'Content-Type': 'multipart/form-data' }
-            })
-          }
-        } catch (err) {
-          console.error('Evaluation error:', err)
-          setEvaluation({
-            score: 70,
-            strengths: ['Provided a response'],
-            weaknesses: [],
-            feedback: 'Your response was recorded.',
-            evaluationType: 'Saved'
+          await axios.post(`${API_BASE_URL}/sessions/${sessionId}/response`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
           })
         }
-      }, 100)
-
-      // Skip follow-up generation to avoid crashes
-      // await generateFollowupQuestion(currentQuestion, transcription)
-
-    } catch (err) {
-      console.error('Evaluation error:', err)
-      setError('Failed to evaluate response. The answer was saved but evaluation is unavailable.')
-      // Show a basic fallback evaluation
-      setEvaluation({
-        score: 70,
-        strengths: ['Provided a response'],
-        weaknesses: ['Evaluation service unavailable'],
-        feedback: 'Your response was recorded successfully.',
-        evaluationType: 'Fallback'
-      })
-    } finally {
-      setIsEvaluating(false)
-    }
+      } catch (err) {
+        console.error('Evaluation error:', err)
+        setEvaluation({
+          score: 70,
+          strengths: ['Provided a response'],
+          weaknesses: [],
+          feedback: 'Your response was recorded.',
+          evaluationType: 'Saved'
+        })
+      }
+    }, 100)
   }
 
   // Visualize audio
